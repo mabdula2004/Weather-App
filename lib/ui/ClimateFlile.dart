@@ -57,7 +57,7 @@ class _ClimateState extends State<Climate> {
             alignment: Alignment.topRight,
             margin: EdgeInsets.fromLTRB(0.0, 12.9, 20.9, 0.0),
             child: Text(
-              _cityEntered ?? 'Vehari',
+              '${_cityEntered==null ? defaultCity: _cityEntered}',
               style: cityStyle(),
             ),
           ),
@@ -77,7 +77,7 @@ class _ClimateState extends State<Climate> {
           ),
           Container(
             margin: EdgeInsets.fromLTRB(20, 220, 0.0, 0.0),
-            child: updateTempWidget(_cityEntered ?? 'Vehari'),
+            child: updateTempWidget('${_cityEntered==null ? defaultCity: _cityEntered}'),
           ),
         ],
       ),
