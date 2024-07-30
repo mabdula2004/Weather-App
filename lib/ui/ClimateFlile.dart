@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../utils/ApiFlie.dart';
 
 class Climate extends StatefulWidget {
   const Climate({super.key});
@@ -45,12 +46,12 @@ class _ClimateState extends State<Climate> {
           ),
           Center(
             child: Image.asset('images/light_rain.png',
-              height:200 ,
-              width: 100,
+              height:100 ,
+              width: 80,
             ),
           ),
           Container(
-            margin: EdgeInsets.fromLTRB(40, 400, 0.0,0.0),
+            margin: EdgeInsets.fromLTRB(35, 385, 0.0,0.0),
             child: Text('50.32F',
             style: temStyle(),
             ),
