@@ -37,6 +37,24 @@ class _ClimateState extends State<Climate> {
             style: cityStyle(),
             ),
           ),
+          Center(
+            child: Image.asset('images/light_rain1.png',
+            height:300 ,
+            width: 400,
+            ),
+          ),
+          Center(
+            child: Image.asset('images/light_rain.png',
+              height:200 ,
+              width: 100,
+            ),
+          ),
+          Container(
+            margin: EdgeInsets.fromLTRB(40, 400, 0.0,0.0),
+            child: Text('50.32F',
+            style: temStyle(),
+            ),
+          ),
         ],
       ),
     );
@@ -49,5 +67,15 @@ TextStyle cityStyle(){
     color: Colors.white,
     fontSize: 22.9,
     fontStyle: FontStyle.italic,
+  );
+}
+
+
+TextStyle temStyle(){
+  return TextStyle(
+    color: Colors.white,
+    fontWeight: FontWeight.w500,
+    fontSize: 45,
+    fontStyle: FontStyle.normal,
   );
 }

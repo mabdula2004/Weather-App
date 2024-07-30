@@ -64,6 +64,7 @@ flutter:
      - images/rain_road.jpg
      - images/light_rain.png
      - images/snow_road.png
+     - images/light_rain1.png
 
   # assets:
   #   - images/a_dot_burr.jpeg
