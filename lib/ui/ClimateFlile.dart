@@ -11,9 +11,22 @@ class Climate extends StatefulWidget {
 }
 
 class _ClimateState extends State<Climate> {
-  void showStuff() async {
-    Map data = await getWeather(apiId, defaultCity);
-    print(data.toString());
+  String? _cityEntered;
+
+  Future<void> _goToNextScreen(BuildContext context) async {
+    Map? results = await Navigator.of(context).push(
+      MaterialPageRoute<Map>(
+        builder: (BuildContext context) {
+          return ChangeCity();
+        },
+      ),
+    );
+
+    if (results != null && results.containsKey('enter')) {
+      setState(() {
+        _cityEntered = results['enter'];
+      });
+    }
   }
 
   @override
@@ -25,8 +38,10 @@ class _ClimateState extends State<Climate> {
         actions: [
           IconButton(
             icon: Icon(Icons.menu),
-            onPressed: () => showStuff(),
-          )
+            onPressed: () {
+              _goToNextScreen(context);
+            },
+          ),
         ],
       ),
       body: Stack(
@@ -42,7 +57,7 @@ class _ClimateState extends State<Climate> {
             alignment: Alignment.topRight,
             margin: EdgeInsets.fromLTRB(0.0, 12.9, 20.9, 0.0),
             child: Text(
-              'Vehari',
+              _cityEntered ?? 'Vehari',
               style: cityStyle(),
             ),
           ),
@@ -61,11 +76,8 @@ class _ClimateState extends State<Climate> {
             ),
           ),
           Container(
-            margin: EdgeInsets.fromLTRB(35, 385, 0.0, 0.0),
-            child: Text(
-              '50.32F',
-              style: temStyle(),
-            ),
+            margin: EdgeInsets.fromLTRB(20, 220, 0.0, 0.0),
+            child: updateTempWidget(_cityEntered ?? 'Vehari'),
           ),
         ],
       ),
@@ -88,6 +100,90 @@ class _ClimateState extends State<Climate> {
       return {'error': 'An exception occurred: $e'};
     }
   }
+
+  Widget updateTempWidget(String city) {
+    return FutureBuilder<Map<String, dynamic>>(
+      future: getWeather(apiId, city),
+      builder: (BuildContext context, AsyncSnapshot<Map<String, dynamic>> snapshot) {
+        if (snapshot.hasData) {
+          Map content = snapshot.data!;
+          return Container(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                ListTile(
+                  title: Text(
+                    "${content['main']['temp']} °F",
+                    style: temStyle(),
+                  ),
+                  subtitle: ListTile(
+                    title: Text(
+                      "Humidity: ${content['main']['humidity']}\n"
+                          "Min: ${content['main']['temp_min']} °F\n"
+                          "Max: ${content['main']['temp_max']} °F",
+                      style: extraData(),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          );
+        } else {
+          return Center(child: CircularProgressIndicator());
+        }
+      },
+    );
+  }
+}
+
+class ChangeCity extends StatelessWidget {
+  final TextEditingController _cityFieldController = TextEditingController();
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        backgroundColor: Colors.red,
+        title: Text('Change City'),
+        centerTitle: true,
+      ),
+      body: Stack(
+        children: <Widget>[
+          Center(
+            child: Image.asset(
+              'images/snow_road.png',
+              width: 400.0,
+              height: 350.0,
+              fit: BoxFit.fill,
+            ),
+          ),
+          ListView(
+            children: <Widget>[
+              ListTile(
+                title: TextField(
+                  controller: _cityFieldController,
+                  decoration: InputDecoration(
+                    hintText: 'Enter City',
+                  ),
+                ),
+              ),
+              ListTile(
+                title: ElevatedButton(
+                  onPressed: () {
+                    Navigator.pop(context, {'enter': _cityFieldController.text});
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.redAccent,
+                  ),
+                  child: Text('Get Weather'),
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
 }
 
 TextStyle cityStyle() {
@@ -100,9 +196,18 @@ TextStyle cityStyle() {
 
 TextStyle temStyle() {
   return TextStyle(
-    color: Colors.white,
+    color: Colors.black,
     fontWeight: FontWeight.w500,
     fontSize: 45,
     fontStyle: FontStyle.normal,
+  );
+}
+
+TextStyle extraData() {
+  return TextStyle(
+    color: Colors.black,
+    fontWeight: FontWeight.bold,
+    fontStyle: FontStyle.normal,
+    fontSize: 17.0,
   );
 }
